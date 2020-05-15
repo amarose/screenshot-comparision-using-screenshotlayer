@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 import requests
 from io import BytesIO
+import credentials
 
 
 def comparison(file1, file2):
@@ -58,8 +59,8 @@ params = {
 }
 
 # set your access key, secret keyword and target URL
-access_key = "3f0042f8c12308b4dbd002dacf54d43c"
-secret_keyword = "sky"
-url = "https://adamautomation1.porannakawka.com"
+access_key = credentials.access_key_keeper()
+secret_keyword = credentials.secret_keyword_keeper()
+url = credentials.url_keeper()
 
 print(arrays_matching())

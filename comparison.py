@@ -1,22 +1,28 @@
 #!/usr/bin/python
 from screenshotlayer import screenshotlayer
 import numpy as np
-from PIL import Image
 import requests
 from io import BytesIO
 import credentials
+from PIL import Image
+from scipy.linalg import norm
+
+
+def array_to_grayscale(array):
+    if len(array.shape) == 3:
+        return np.average(array, -1)
+    else:
+        return array
 
 
 def comparison(file1, file2):
-    array1 = np.array(file1)
-    print(f'array1: {array1}')
-    array2 = np.array(file2)
-    print(f'array2: {array2}')
-    if array1.shape != array2.shape:
-        return False
-    # compare = np.array_equal(array1, array2)
-    compare = np.setdiff1d(array1, array2)
-    return compare
+    array1 = array_to_grayscale(np.array(file1))
+    array2 = array_to_grayscale(np.array(file2))
+    diff = array1 - array2
+    mse = np.mean(diff**2)
+    m_norm = sum(abs(diff))  # Manhattan norm
+    z_norm = norm(diff.ravel(), 0)  # Zero norm
+    return m_norm/array1.size, z_norm/array1.size, mse
 
 
 def file_compare(file1, file2):
@@ -26,20 +32,9 @@ def file_compare(file1, file2):
 
 
 def arrays_matching(template="template.png"):
-    template = template
     api_screenshot = requests.get(screenshotlayer(access_key, secret_keyword, url, params)).content
-    compare_result = file_compare(template, BytesIO(api_screenshot))
-    print(f'compare result: {compare_result}')
+    compare_result = file_compare(BytesIO(api_screenshot), template)
     return compare_result
-    # threshold = 0.6
-    # loc = np.where(compare_result >= threshold)
-    # print(f'Loc: {loc}')
-    # if loc[0].size > 0:
-    #     print(f'Loc 0: {loc[0].size}')
-    #     print("Template matched!")
-    #     return True
-    # else:
-    #     print("Matching failed")
 
 
 # set optional parameters (leave blank if unused)

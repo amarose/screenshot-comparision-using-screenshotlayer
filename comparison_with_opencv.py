@@ -15,12 +15,15 @@ def template_matching(picture="template.png"):
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
     screenshot_gray = cv2.cvtColor(screenshot_array, cv2.COLOR_BGR2GRAY)
     result = cv2.matchTemplate(screenshot_gray, template_gray, cv2.TM_CCOEFF_NORMED)
-    threshold = 0.1
+    threshold = 0.95
     loc = np.where(result >= threshold)
     if loc[0].size > 0:
         print("Template matched!")
         cv2.destroyAllWindows()
         return True
+    else:
+        print("Matching failed")
+        return False
 
 
 # set optional parameters (leave blank if unused)

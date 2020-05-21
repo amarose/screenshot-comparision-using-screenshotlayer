@@ -45,7 +45,7 @@ params = {
     'format': 'PNG',
     'css_url': '',
     'delay': '5',
-    'ttl': '300',
+    'ttl': '60',
     'force': '',
     'placeholder': '',
     'user_agent': '',
